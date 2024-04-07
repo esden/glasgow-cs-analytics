@@ -195,8 +195,8 @@ fn run() -> Result<(), Box<dyn Error>> {
         }
     }
 
-    let glasgow_at_mouser = 460_usize;
-    let glasgow_cases_at_mouser = 980_usize;
+    let glasgow_at_mouser: usize = 200 + 260 + 260;
+    let glasgow_cases_at_mouser: usize = 980;
 
     println!("We have {} orders, out of which {} ({:.1}%) are fulfilled.",
         order_counter,
