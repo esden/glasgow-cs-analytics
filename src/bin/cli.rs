@@ -1,7 +1,5 @@
 use std::{env, error::Error, process::{self, exit}};
-
-mod order_data;
-mod glasgow_data;
+use cs_analytics::glasgow_data;
 
 fn run() -> Result<(), Box<dyn Error>> {
 

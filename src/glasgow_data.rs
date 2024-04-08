@@ -11,7 +11,7 @@ pub(crate) enum Product {
 }
 
 #[derive(Debug)]
-pub(crate) struct Order {
+pub struct Order {
     cs_id: usize,
     queue_id: usize,
     products: Vec<Product>,
@@ -21,7 +21,7 @@ pub(crate) struct Order {
 }
 
 #[derive(Debug)]
-pub(crate) struct Orders {
+pub struct Orders {
     pub orders: Vec<Order>,
     pub glasgow_count: usize,
     pub glasgow_case_count: usize,
