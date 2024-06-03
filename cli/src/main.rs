@@ -16,16 +16,16 @@ fn run() -> Result<(), Box<dyn Error>> {
     }
     let my_order = my_order.unwrap();
 
-    let glasgow_at_mouser: usize = 200 + 260 + 260;
-    let glasgow_cases_at_mouser: usize = 980;
+    let glasgow_at_mouser: usize = 1136;
+    let glasgow_cases_at_mouser: usize = 1748;
     let mut orders = glasgow_data::Orders::new(&args[1], glasgow_at_mouser, glasgow_cases_at_mouser)?;
     orders.calculate_queue();
 
     orders.print_stats();
     println!();
 
-    orders.print_skipped();
-    println!();
+    // orders.print_skipped();
+    // println!();
 
     orders.print_order_info(my_order);
 
