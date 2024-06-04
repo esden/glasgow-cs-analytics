@@ -162,6 +162,14 @@ impl Orders {
         ((self.get_fulfilled_count() as f64) / self.get_order_count() as f64) * 100.0
     }
 
+    pub fn get_remaining_count(self: &Self) -> usize {
+        self.orders.iter().filter(|o| !o.fulfilled).count()
+    }
+
+    pub fn get_remaining_percent(self: &Self) -> f64 {
+        ((self.get_remaining_count() as f64) / self.get_order_count() as f64) * 100.0
+    }
+
     pub fn get_fulfilled_glasgow_count(self: &Self) -> usize {
         self.orders.iter().map(|o| if o.fulfilled {
             o.products
@@ -186,6 +194,14 @@ impl Orders {
         (self.get_glasgow_at_mouser_count() as f64 / self.glasgow_count as f64) * 100.0
     }
 
+    pub fn get_remaining_glasgow_count(self: &Self) -> i32 {
+        self.glasgow_count as i32 - self.glasgow_sent_to_mouser as i32
+    }
+
+    pub fn get_remaining_glasgow_percent(self: &Self) -> f64 {
+        (self.get_remaining_glasgow_count() as f64 / self.glasgow_count as f64) * 100.0
+    }
+
     pub fn get_fulfilled_glasgow_cases_count(self: &Self) -> usize {
         self.orders.iter().map(|o| if o.fulfilled {
             o.products
@@ -208,6 +224,14 @@ impl Orders {
 
     pub fn get_glasgow_cases_at_mouser_percent(self: &Self) -> f64 {
         (((self.get_glasgow_cases_at_mouser_count()) as f64) / self.glasgow_case_count as f64) * 100.0
+    }
+
+    pub fn get_remaining_glasgow_cases_count(self: &Self) -> i32 {
+        self.glasgow_case_count as i32 - self.glasgow_cases_sent_to_mouser as i32
+    }
+
+    pub fn get_remaining_glasgow_cases_percent(self: &Self) -> f64 {
+        (self.get_remaining_glasgow_cases_count() as f64 / self.glasgow_case_count as f64) * 100.0
     }
 
     pub fn print_stats(self: &Self) {

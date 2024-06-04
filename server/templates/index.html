@@ -29,12 +29,14 @@
     <tr>
         <th>Item</th>
         <th>Count</th>
-        <th>At Mouser Count</th>
-        <th>Fulfilled Count</th>
+        <th>At Mouser</th>
+        <th>Fulfilled</th>
+        <th>Remaining</th>
     </tr>
     <tr>
         <td>Glasgows sent to Mouser</td>
         <td>{{ orders.glasgow_sent_to_mouser }}</td>
+        <td><hr/></td>
         <td><hr/></td>
         <td><hr/></td>
     </tr>
@@ -43,24 +45,30 @@
         <td>{{ orders.glasgow_cases_sent_to_mouser }}</td>
         <td><hr/></td>
         <td><hr/></td>
+        <td><hr/></td>
     </tr>
     <tr>
         <td>Orders</td>
         <td>{{ orders.get_order_count() }}</td>
         <td><hr/></td>
         <td>{{ orders.get_fulfilled_count() }} ({{ orders.get_fulfilled_percent()|fmt("{:.1}") }}%)</td>
+        <td>{{ orders.get_remaining_count() }} ({{ orders.get_remaining_percent()|fmt("{:.1}") }}%)</td>
     </tr>
     <tr>
         <td>Ordered Glasgows</td>
         <td>{{ orders.glasgow_count }}</td>
         <td>{{ orders.get_glasgow_at_mouser_count() }} ({{ orders.get_glasgow_at_mouser_percent()|fmt("{:.1}") }}%)</td>
         <td>{{ orders.get_fulfilled_glasgow_count() }} ({{ orders.get_fulfilled_glasgow_percent()|fmt("{:.1}") }}%)</td>
+        <td>{{ orders.get_remaining_glasgow_count() }} ({{ orders.get_remaining_glasgow_percent()|fmt("{:.1}") }}%)</td>
     </tr>
     <tr>
         <td>Ordered Glasgow Cases</td>
         <td>{{ orders.glasgow_case_count }}</td>
         <td>{{ orders.get_glasgow_cases_at_mouser_count() }} ({{ orders.get_glasgow_cases_at_mouser_percent()|fmt("{:.1}") }}%)</td>
         <td>{{ orders.get_fulfilled_glasgow_cases_count() }} ({{ orders.get_fulfilled_glasgow_cases_percent()|fmt("{:.1}") }}%)</td>
+        <td>{{ orders.get_remaining_glasgow_cases_count() }} ({{ orders.get_remaining_glasgow_cases_percent()|fmt("{:.1}") }}%)</td>
     </tr>
 </table>
+<br/>
+Note: There is a possibility that some of the numbers are negative. If for example the "At Mouser" value is negative it most likely means that some items were returned and Mouser ended up shipping them to another customer. This results in more Glasgows being shipped to customers than the amount we sent to them. If the number in "Remaining" is negative, this indicates that we sent more items to Mouser than the amount needed to fulfill the outstanding orders.
 {% endblock %}
