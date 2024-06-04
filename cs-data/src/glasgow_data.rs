@@ -1,7 +1,9 @@
 use std::error::Error;
 use crate::order_data;
+use crate::production_data;
+use serde::{Serialize, Deserialize};
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub(crate) enum Product {
     Glasgow{id: usize},
     GlasgowCase{id: usize},
@@ -10,7 +12,7 @@ pub(crate) enum Product {
     Unknown{name: String}
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Order {
     cs_id: usize,
     queue_id: usize,
@@ -20,7 +22,7 @@ pub struct Order {
     fulfilled: bool
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Orders {
     pub orders: Vec<Order>,
     pub glasgow_count: usize,
@@ -30,8 +32,9 @@ pub struct Orders {
 }
 
 impl Orders {
-    pub fn new(data: &String, glasgow_at_mouser: usize, glasgow_cases_at_mouser: usize) -> Result<Self, Box<dyn Error>> {
-        let order_data = order_data::OrderData::new(data)?;
+    pub fn new(order_data: &String, production_data: &String) -> Result<Self, Box<dyn Error>> {
+        //println!("Parsing Order Data.");
+        let order_data = order_data::OrderData::new(order_data)?;
         let mut orders: Vec<Order> = Vec::new();
         for record in order_data.records.iter() {
             let mut early_bird = false;
@@ -69,6 +72,18 @@ impl Orders {
                     fulfilled: shipped
                 })
             }
+        }
+
+        //println!("Parsing production data.");
+        let production_data = production_data::ProductionData::new(production_data)?;
+        let mut glasgow_at_mouser = 0_usize;
+        let mut glasgow_cases_at_mouser = 0_usize;
+        for record in production_data.records.iter() {
+                match record.product_name.as_str() {
+                    "GLASGOW-C3" => glasgow_at_mouser += record.qty,
+                    "GLASGOW-C3-AL-CASE" => glasgow_cases_at_mouser += record.qty,
+                    _ => println!("Unknown Product {}", record.product_name.to_string())
+                };
         }
 
         Ok(Self {
@@ -167,19 +182,20 @@ impl Orders {
     }
 
     pub fn print_stats(self: &Self) {
-        println!("We have {} orders, out of which {} ({:.1}%) are fulfilled.",
+        println!("We sent {} Glasgows and {} Glasgow Cases to Mouser.", self.glasgow_at_mouser, self.glasgow_cases_at_mouser);
+        println!("We received {} orders, out of which {} ({:.1}%) are fulfilled.",
             self.get_order_count(),
             self.get_fulfilled_count(),
             ((self.get_fulfilled_count() as f64) / self.get_order_count() as f64) * 100.0,
         );
-        println!("We have {} Glasgows ordered, out of which {} ({:.1}%) are at Mouser and {} ({:.1}%) have shipped.",
+        println!("The orders contain {} Glasgows, out of which {} ({:.1}%) are at Mouser and {} ({:.1}%) have shipped.",
             self.glasgow_count,
             self.glasgow_at_mouser as i32 - self.get_fulfilled_glasgow_count() as i32,
             (((self.glasgow_at_mouser as i32 - self.get_fulfilled_glasgow_count() as i32) as f64) / self.glasgow_count as f64) * 100.0,
             self.get_fulfilled_glasgow_count(),
             ((self.get_fulfilled_glasgow_count() as f64) / self.glasgow_count as f64) * 100.0,
         );
-        println!("We have {} Glasgow Cases ordered, out of which {} ({:.1}%) are at Mouser and {} ({:.1}%) have shipped.",
+        println!("The orders contain {} Glasgow Cases, out of which {} ({:.1}%) are at Mouser and {} ({:.1}%) have shipped.",
             self.glasgow_case_count,
             self.glasgow_cases_at_mouser - self.get_fulfilled_glasgow_case_count(),
             (((self.glasgow_cases_at_mouser - self.get_fulfilled_glasgow_case_count()) as f64) / self.glasgow_case_count as f64) * 100.0,

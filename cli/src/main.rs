@@ -5,20 +5,18 @@ fn run() -> Result<(), Box<dyn Error>> {
 
     // Parse arguments
     let args: Vec<String> = env::args().collect();
-    if args.len() < 3 {
-        println!("You need to provide the data CSV and an order ID as a command line parameter!");
+    if args.len() < 4 {
+        println!("You need to provide the mouser fulfillment data CSV, production data CSV and an order ID as a command line parameters!");
         exit(1);
     }
-    let my_order = args[2].parse::<usize>();
+    let my_order = args[3].parse::<usize>();
     if my_order.is_err() {
-        println!("Could not parse the order ID you provided {} as usize number. {:?}", args[2], my_order.err());
+        println!("Could not parse the order ID you provided {} as usize number. {:?}", args[3], my_order.err());
         exit(1);
     }
     let my_order = my_order.unwrap();
 
-    let glasgow_at_mouser: usize = 1136;
-    let glasgow_cases_at_mouser: usize = 1748;
-    let mut orders = glasgow_data::Orders::new(&args[1], glasgow_at_mouser, glasgow_cases_at_mouser)?;
+    let mut orders = glasgow_data::Orders::new(&args[1], &args[2])?;
     orders.calculate_queue();
 
     orders.print_stats();
