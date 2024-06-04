@@ -1,0 +1,3 @@
+[env]
+FULFILLMENT_DATA = "../../fulfillment-tracking/orders-glasgow-interface-explorer-2024-06-03.csv"
+PRODUCTION_DATA = "../../fulfillment-tracking/1b2-mouser-shipments-2024-05-22.csv"

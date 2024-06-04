@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {# Allow any inheriting page to set it's own title #}
+    <title>{% block title %}{{ title }}{% endblock %}</title>
+
+    {# Allow any inheriting page to extend head with additional assets #}
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <div id="content">
+        {# Inheriting pages will have their content rendered here, similar to app root in other systems #}
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>
