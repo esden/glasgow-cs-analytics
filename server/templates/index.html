@@ -87,9 +87,9 @@ Note: There is a possibility that some of the numbers are negative. If for examp
     <label for="id">Order Number:</label>
     <input type="text" name="id" {% block order_id_value %}{% endblock %}>
     <label>Order Date:</label>
-    <input type="text" name="year" maxlength="4" size="4" {% block order_year_value %}value="YYYY"{%endblock%}>
-    <input type="text" name="month" maxlength="2" size="2" {% block order_month_value %}value="mm"{% endblock %}>
-    <input type="text" name="day" maxlength="2" size="2" {% block order_day_value %}value="dd"{% endblock %}>
+    <input type="text" name="year" maxlength="4" size="4" placeholder="YYYY"{% block order_year_value %}{%endblock%}>
+    <input type="text" name="month" maxlength="2" size="2" placeholder="mm"{% block order_month_value %}{% endblock %}>
+    <input type="text" name="day" maxlength="2" size="2" placeholder="dd"{% block order_day_value %}{% endblock %}>
     <input type="submit" value="Submit">
 </form>
 
