@@ -19,7 +19,9 @@ SPDX-FileContributor: Written by Piotr Esden-Tempski <piotr@1bitsquared.com>
 {% when None %}
 Sorry could not find order with the ID {{ order_id }}.
 {% when Some with (order_data) %}
-{{ order_data.date }}
+{% if order_data.fulfilled %}
+Your order number {{ order_id }} was fulfilled. It had the queue id {{ order_data.queue_id }}.
+{% else %}
 Your order number {{ order_id }} has the queue id {{ order_data.queue_id }}.<br/>
 There are still {{ order_data.queue_id - orders.get_fulfilled_count() }} orders to fulfill before it is your turn.<br/>
 Your order contains:
@@ -72,6 +74,7 @@ Your order contains:
 {% endfor %}
 </ul>
 </div>
+{% endif %}
 {% endmatch %}
 
 {% endblock %}

@@ -2,8 +2,6 @@
 // SPDX-FileCopyrightText: 2024 1BitSquared <info@1bitsquared.com>
 // SPDX-FileContributor: Written by Piotr Esden-Tempski <piotr@1bitsquared.com>
 
-use std::borrow::Borrow;
-
 use anyhow::Context;
 use askama::Template;
 use axum::{
@@ -79,12 +77,11 @@ struct OrderQuery {
 
 async fn order_page(State(orders): State<glasgow_data::Orders>, Query(order_query): Query<OrderQuery>) -> impl IntoResponse {
     let mut order = orders.get_order(order_query.id).cloned();
-    order = if order.is_some() {
+    let query_date = NaiveDate::from_ymd_opt(order_query.year, order_query.month, order_query.day);
+    order = if order.is_some() && query_date.is_some() {
             let od = order.unwrap();
-            let query_date = NaiveDate::from_ymd_opt(order_query.year, order_query.month, order_query.day);
-            if query_date.is_none() {
-                None
-            } else if od.date.ne(query_date.unwrap().borrow()) {
+            let diff = od.date.signed_duration_since(query_date.unwrap()).abs().num_days();
+            if diff > 1 {
                 None
             } else {
                 Some(od)
@@ -102,6 +99,7 @@ async fn order_page(State(orders): State<glasgow_data::Orders>, Query(order_quer
             order};
     HtmlTemplate(template)
 }
+
 #[derive(Template)]
 #[template(path = "order.html")]
 struct OrderTemplate {
