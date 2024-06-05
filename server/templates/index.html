@@ -26,24 +26,30 @@ SPDX-FileContributor: Written by Piotr Esden-Tempski <piotr@1bitsquared.com>
 <table class="table text-center table-hover table-sm">
     <tr>
         <th>Item</th>
+        <th>Requested by <br/> Mouser (CrowdSupply)</th>
+        <th>Shipped to <br/> Mouser (CrowdSupply)</th>
+    </tr>
+    <tr>
+        <th scope="row" class="text-start">Glasgows</th>
+        <td>2469</td>
+        <td>{{ orders.glasgow_sent_to_mouser }}</td>
+    </tr>
+    <tr>
+        <th scope="row" class="text-start">Glasgow Cases</th>
+        <td>1748</td>
+        <td>{{ orders.glasgow_cases_sent_to_mouser }}</td>
+        <td><hr/></td>
+    </tr>
+    </table>
+</div>
+<div class="table-responsive">
+    <table class="table text-center table-hover table-sm">
+    <tr>
+        <th>Item</th>
         <th>Count</th>
         <th>At Mouser</th>
         <th>Fulfilled</th>
         <th>Remaining</th>
-    </tr>
-    <tr>
-        <th scope="row" class="text-start">Glasgows sent to Mouser</th>
-        <td>{{ orders.glasgow_sent_to_mouser }}</td>
-        <td><hr/></td>
-        <td><hr/></td>
-        <td><hr/></td>
-    </tr>
-    <tr>
-        <th scope="row" class="text-start">Glasgow cases sent to Mouser</th>
-        <td>{{ orders.glasgow_cases_sent_to_mouser }}</td>
-        <td><hr/></td>
-        <td><hr/></td>
-        <td><hr/></td>
     </tr>
     <tr>
         <th scope="row" class="text-start">Orders</th>
@@ -115,10 +121,10 @@ Note: There is a possibility that some of the numbers are negative. If for examp
 </ul>
 
 </main>
-<footer>
-<br/>
-<b>Disclaimer:</b> The above information is calculated based on best effort and data we have available. The information might not reflect physical reality. If you have questions about your order <a href="https://www.crowdsupply.com/contact">contact CrowdSupply</a>.<br/>
-<b>Contact:</b> If you have technical suggestions feel free to open an issue on the tracker <a href="https://github.com/esden/glasgow-cs-analytics">GitHub page</a>. If you have other questions you can ask through the regular <a href="http://glasgow-embedded.org/latest/community.html">Glasgow Community channels</a>.<br/>
-This tracker was brought to you by <a href="https://chaos.social/@esden">Piotr Esden-Tempski</a>.
-</footer>
+<nav class="navbar fixed-bottom">
+<ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+<li class="nav-item"><b>Disclaimer:</b> The above information is calculated based on best effort and data we have available. The information might not reflect physical reality. If you have questions about your order <a href="https://www.crowdsupply.com/contact">contact CrowdSupply</a>.</li>
+<li class="nav-item"><b>Contact:</b> If you have technical suggestions feel free to open an issue on the tracker <a href="https://github.com/esden/glasgow-cs-analytics">GitHub page</a>. If you have other questions you can ask through the regular <a href="http://glasgow-embedded.org/latest/community.html">Glasgow Community channels</a>.</li>
+<li class="nav-item">This tracker was brought to you by <a href="https://chaos.social/@esden">Piotr Esden-Tempski</a>.</li>
+</nav>
 {% endblock %}
