@@ -303,6 +303,8 @@ impl Orders {
 
         let order = order.unwrap();
 
+        println!("Your order number {} was placed on {} and has the queue id {}.", order_id, order.date, order.queue_id);
+
         // Order fulfilled
         if order.fulfilled {
             println!("Your order was fulfilled.");
@@ -310,7 +312,6 @@ impl Orders {
         }
 
         // Found order, print info
-        println!("Your order number {} has the queue id {}.", order_id, order.queue_id);
         println!("We have fulfilled {} orders, so there are still {} orders to fulfill before it is your turn.",
             self.get_fulfilled_count(),
             order.queue_id - self.get_fulfilled_count()
