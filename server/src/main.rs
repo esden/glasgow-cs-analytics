@@ -56,6 +56,7 @@ async fn main() -> anyhow::Result<()> {
 }
 
 async fn index_page(State(orders): State<glasgow_data::Orders>) -> impl IntoResponse {
+    info!("Index page call.");
     let template =
         IndexTemplate {orders};
     HtmlTemplate(template)
@@ -78,6 +79,11 @@ struct OrderQuery {
 async fn order_page(State(orders): State<glasgow_data::Orders>, Query(order_query): Query<OrderQuery>) -> impl IntoResponse {
     let mut order = orders.get_order(order_query.id).cloned();
     let query_date = NaiveDate::from_ymd_opt(order_query.year, order_query.month, order_query.day);
+    if order.is_some() {
+        info!("Lookup of a valid order id {} with date {}-{}-{}.", order_query.id, order_query.year, order_query.month, order_query.day);
+    } else {
+        info!("Lookup of an invalid order id {} with date {}-{}-{}.", order_query.id, order_query.year, order_query.month, order_query.day);
+    }
     order = if order.is_some() && query_date.is_some() {
             let od = order.unwrap();
             let diff = od.date.signed_duration_since(query_date.unwrap()).abs().num_days();
@@ -89,6 +95,9 @@ async fn order_page(State(orders): State<glasgow_data::Orders>, Query(order_quer
         } else {
             None
         };
+    if order.is_none() {
+        info!("Date check for order id {} with date {}-{}-{}. Failed.", order_query.id, order_query.year, order_query.month, order_query.day);
+    }
     let template =
         OrderTemplate {
             orders,
