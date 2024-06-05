@@ -46,7 +46,7 @@ Order contents:
     {% when glasgow_data::Product::GlasgowCase with { id: product_id }%}
         <td>Glasgow Case</td>
         <td>{{ product_id  }}</td>
-        {% if product_id.le(orders.glasgow_sent_to_mouser) %}
+        {% if product_id.le(orders.glasgow_cases_sent_to_mouser) %}
             <td>Ready to ship.</td>
         {% else %}
             <td>Need to ship {{ product_id - orders.glasgow_cases_sent_to_mouser }} to Mouser before ready.</td>
@@ -62,7 +62,7 @@ Order contents:
     {% when glasgow_data::Product::GlasgowCaseEarlyBird with { id: product_id }%}
         <td>EarlyBird Glasgow Case</td>
         <td>{{ product_id }}</td>
-        {% if product_id.le(orders.glasgow_sent_to_mouser) %}
+        {% if product_id.le(orders.glasgow_cases_sent_to_mouser) %}
             <td>Ready to ship.</td>
         {% else %}
             <td>Need to ship {{ product_id - orders.glasgow_cases_sent_to_mouser }} to Mouser before ready.</td>
