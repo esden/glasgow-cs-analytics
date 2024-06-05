@@ -24,55 +24,57 @@ Your order number {{ order_id }} was fulfilled. It had the queue id {{ order_dat
 {% else %}
 Your order number {{ order_id }} has the queue id {{ order_data.queue_id }}.<br/>
 There are still {{ order_data.queue_id - orders.get_fulfilled_count() }} orders to fulfill before it is your turn.<br/>
-Your order contains:
+Order contents:
 <div class="product_list">
-<ul>
-{% for p in order_data.products %}
-{% match p %}
+<table>
+    <tr>
+        <th>Product</th>
+        <th>Queue ID</th>
+        <th>Status</th>
+    </tr>
+    {% for p in order_data.products %}
+    <tr>
+    {% match p %}
     {% when glasgow_data::Product::Glasgow with { id: product_id }%}
-    <li>
-        Glasgow with the queue ID {{ product_id }},
-        {% if product_id.le(orders.glasgow_sent_to_mouser) -%}
-        it is at Mouser and will ship soon, if all items in your order are available.
-        {% else -%}
-        we have to ship {{ product_id - orders.glasgow_sent_to_mouser }} Glasgows to Mouser before your order can be fulfilled.
+        <td>Glasgow</td>
+        <td>{{ product_id }}</td>
+        {% if product_id.le(orders.glasgow_sent_to_mouser) %}
+            <td>Ready to ship.</td>
+        {% else %}
+            <td>Need to ship {{ product_id - orders.glasgow_sent_to_mouser }} to Mouser before ready.</td>
         {% endif %}
-    </li>
-
     {% when glasgow_data::Product::GlasgowCase with { id: product_id }%}
-    <li>
-        Glasgow Case with the queue ID {{ product_id }},
-        {% if product_id.le(orders.glasgow_cases_sent_to_mouser) -%}
-        it is at Mouser and will ship soon, if all items in your order are available.
-        {% else -%}
-        we have to ship {{ product_id - orders.glasgow_cases_sent_to_mouser }} Glasgow cases to Mouser before your order can be fulfilled.
+        <td>Glasgow Case</td>
+        <td>{{ product_id  }}</td>
+        {% if product_id.le(orders.glasgow_sent_to_mouser) %}
+            <td>Ready to ship.</td>
+        {% else %}
+            <td>Need to ship {{ product_id - orders.glasgow_cases_sent_to_mouser }} to Mouser before ready.</td>
         {% endif %}
-    </li>
     {% when glasgow_data::Product::GlasgowEarlyBird with { id: product_id }%}
-    <li>
-        EarlyBird Glasgow with the queue ID {{ product_id }},
-        {% if product_id.le(orders.glasgow_sent_to_mouser) -%}
-        it is at Mouser and will ship soon, if all items in your order are available.
-        {% else -%}
-        we have to ship {{ product_id - orders.glasgow_sent_to_mouser }} Glasgows to Mouser before your order can be fulfilled.
+        <td>EarlyBird Glasgow</td>
+        <td>{{ product_id }}</td>
+        {% if product_id.le(orders.glasgow_sent_to_mouser) %}
+            <td>Ready to ship.</td>
+        {% else %}
+            <td>Need to ship {{ product_id - orders.glasgow_sent_to_mouser }} to Mouser before ready.</td>
         {% endif %}
-    </li>
     {% when glasgow_data::Product::GlasgowCaseEarlyBird with { id: product_id }%}
-    <li>
-        EarlyBird Glasgow Case with the queue ID {{ product_id }},
-        {% if product_id.le(orders.glasgow_cases_sent_to_mouser) -%}
-        it is at Mouser and will ship soon, if all items in your order are available.
-        {% else -%}
-        we have to ship {{ product_id - orders.glasgow_cases_sent_to_mouser }} Glasgow cases to Mouser before your order can be fulfilled.
+        <td>EarlyBird Glasgow Case</td>
+        <td>{{ product_id }}</td>
+        {% if product_id.le(orders.glasgow_sent_to_mouser) %}
+            <td>Ready to ship.</td>
+        {% else %}
+            <td>Need to ship {{ product_id - orders.glasgow_cases_sent_to_mouser }} to Mouser before ready.</td>
         {% endif %}
-    </li>
-    {% when glasgow_data::Product::Unknown with { name: product_name }%}
-    <li>
-        Unknown
-    </li>
-{% endmatch %}
-{% endfor %}
-</ul>
+    {% when glasgow_data::Product::Unknown with { name: pn }%}
+        <td>{{ pn }}</td>
+        <td><hr/></td>
+        <td><hr/></td>
+    {% endmatch %}
+    </tr>
+    {% endfor %}
+</table>
 </div>
 {% endif %}
 {% endmatch %}
