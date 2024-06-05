@@ -21,8 +21,14 @@ SPDX-FileContributor: Written by Piotr Esden-Tempski <piotr@1bitsquared.com>
         margin-left: auto;
         margin-right: auto;
       }
+    .product_list {
+        text-align: center;
+    }
+    .product_list > ul {
+        display: inline-block;
+    }
     hr {
-        color: #ffffffcc
+        color: #ffffffcc;
     }
 </style>
 {% endblock %}
@@ -77,4 +83,17 @@ SPDX-FileContributor: Written by Piotr Esden-Tempski <piotr@1bitsquared.com>
 </table>
 <br/>
 Note: There is a possibility that some of the numbers are negative. If for example the "At Mouser" value is negative it most likely means that some items were returned and Mouser ended up shipping them to another customer. This results in more Glasgows being shipped to customers than the amount we sent to them. If the number in "Remaining" is negative, this indicates that we sent more items to Mouser than the amount needed to fulfill the outstanding orders.
+
+<h2>Look up Order</h2>
+<form action="/order">
+    <label for="id">Order Number:</label>
+    <input type="text" name="id" {% block order_id_value %}{% endblock %}>
+    <label>Order Date:</label>
+    <input type="text" name="year" maxlength="4" size="4" {% block order_year_value %}value="YYYY"{%endblock%}>
+    <input type="text" name="month" maxlength="2" size="2" {% block order_month_value %}value="mm"{% endblock %}>
+    <input type="text" name="day" maxlength="2" size="2" {% block order_day_value %}value="dd"{% endblock %}>
+    <input type="submit" value="Submit">
+</form>
+
+{% block order_result %}{% endblock %}
 {% endblock %}

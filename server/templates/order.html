@@ -1,0 +1,77 @@
+{#
+SPDX-License-Identifier: MIT OR Apache-2.0
+SPDX-FileCopyrightText: 2024 1BitSquared <info@1bitsquared.com>
+SPDX-FileContributor: Written by Piotr Esden-Tempski <piotr@1bitsquared.com>
+#}
+
+{% extends "index.html" %}
+
+{% block order_id_value %}value="{{ order_id }}"{% endblock %}
+{% block order_year_value %}value="{{ order_year }}"{% endblock %}
+{% block order_month_value %}value="{{ order_month }}"{% endblock %}
+{% block order_day_value %}value="{{ order_day }}"{% endblock %}
+
+{% block order_result %}
+
+<br/>
+
+{% match order %}
+{% when None %}
+Sorry could not find order with the ID {{ order_id }}.
+{% when Some with (order_data) %}
+{{ order_data.date }}
+Your order number {{ order_id }} has the queue id {{ order_data.queue_id }}.<br/>
+There are still {{ order_data.queue_id - orders.get_fulfilled_count() }} orders to fulfill before it is your turn.<br/>
+Your order contains:
+<div class="product_list">
+<ul>
+{% for p in order_data.products %}
+{% match p %}
+    {% when glasgow_data::Product::Glasgow with { id: product_id }%}
+    <li>
+        Glasgow with the queue ID {{ product_id }},
+        {% if product_id.le(orders.glasgow_sent_to_mouser) -%}
+        it is at Mouser and will ship soon, if all items in your order are available.
+        {% else -%}
+        we have to ship {{ product_id - orders.glasgow_sent_to_mouser }} Glasgows to Mouser before your order can be filfilled.
+        {% endif %}
+    </li>
+
+    {% when glasgow_data::Product::GlasgowCase with { id: product_id }%}
+    <li>
+        Glasgow Case with the queue ID {{ product_id }},
+        {% if product_id.le(orders.glasgow_sent_to_mouser) -%}
+        it is at Mouser and will ship soon, if all items in your order are available.
+        {% else -%}
+        we have to ship {{ product_id - orders.glasgow_sent_to_mouser }} Glasgows to Mouser before your order can be filfilled.
+        {% endif %}
+    </li>
+    {% when glasgow_data::Product::GlasgowEarlyBird with { id: product_id }%}
+    <li>
+        EarlyBird Glasgow with the queue ID {{ product_id }},
+        {% if product_id.le(orders.glasgow_sent_to_mouser) -%}
+        it is at Mouser and will ship soon, if all items in your order are available.
+        {% else -%}
+        we have to ship {{ product_id - orders.glasgow_sent_to_mouser }} Glasgows to Mouser before your order can be filfilled.
+        {% endif %}
+    </li>
+    {% when glasgow_data::Product::GlasgowCaseEarlyBird with { id: product_id }%}
+    <li>
+        EarlyBird Glasgow Case with the queue ID {{ product_id }},
+        {% if product_id.le(orders.glasgow_sent_to_mouser) -%}
+        it is at Mouser and will ship soon, if all items in your order are available.
+        {% else -%}
+        we have to ship {{ product_id - orders.glasgow_sent_to_mouser }} Glasgows to Mouser before your order can be filfilled.
+        {% endif %}
+    </li>
+    {% when glasgow_data::Product::Unknown with { name: product_name }%}
+    <li>
+        Unknown
+    </li>
+{% endmatch %}
+{% endfor %}
+</ul>
+</div>
+{% endmatch %}
+
+{% endblock %}

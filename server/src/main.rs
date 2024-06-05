@@ -2,15 +2,19 @@
 // SPDX-FileCopyrightText: 2024 1BitSquared <info@1bitsquared.com>
 // SPDX-FileContributor: Written by Piotr Esden-Tempski <piotr@1bitsquared.com>
 
+use std::borrow::Borrow;
+
 use anyhow::Context;
 use askama::Template;
 use axum::{
-    extract::State, http::StatusCode, response::{Html, IntoResponse, Response}, routing::get, Router
+    extract::{Query, State}, http::StatusCode, response::{Html, IntoResponse, Response}, routing::get, Router
 };
 use axum_server;
+use serde::Deserialize;
 use tracing::info;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 use cs_data::glasgow_data;
+use chrono::NaiveDate;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
@@ -36,7 +40,10 @@ async fn main() -> anyhow::Result<()> {
 
     info!("initializing router...");
 
-    let router = Router::new().route("/", get(|State(orders)| index_page(orders))).with_state(orders);
+    let router = Router::new()
+        .route("/", get(index_page))
+        .route("/order", get(order_page))
+        .with_state(orders);
     let port = 8019_u16;
     let addr = std::net::SocketAddr::from(([127, 0, 0, 1], port));
 
@@ -50,7 +57,7 @@ async fn main() -> anyhow::Result<()> {
     Ok(())
 }
 
-async fn index_page(orders: glasgow_data::Orders) -> impl IntoResponse {
+async fn index_page(State(orders): State<glasgow_data::Orders>) -> impl IntoResponse {
     let template =
         IndexTemplate {orders};
     HtmlTemplate(template)
@@ -60,6 +67,50 @@ async fn index_page(orders: glasgow_data::Orders) -> impl IntoResponse {
 #[template(path = "index.html")]
 struct IndexTemplate {
     orders: glasgow_data::Orders
+}
+
+#[derive(Deserialize)]
+struct OrderQuery {
+    id: usize,
+    year: i32,
+    month: u32,
+    day: u32,
+}
+
+async fn order_page(State(orders): State<glasgow_data::Orders>, Query(order_query): Query<OrderQuery>) -> impl IntoResponse {
+    let mut order = orders.get_order(order_query.id).cloned();
+    order = if order.is_some() {
+            let od = order.unwrap();
+            let query_date = NaiveDate::from_ymd_opt(order_query.year, order_query.month, order_query.day);
+            if query_date.is_none() {
+                None
+            } else if od.date.ne(query_date.unwrap().borrow()) {
+                None
+            } else {
+                Some(od)
+            }
+        } else {
+            None
+        };
+    let template =
+        OrderTemplate {
+            orders,
+            order_id: order_query.id,
+            order_year: order_query.year,
+            order_month: order_query.month,
+            order_day: order_query.day,
+            order};
+    HtmlTemplate(template)
+}
+#[derive(Template)]
+#[template(path = "order.html")]
+struct OrderTemplate {
+    orders: glasgow_data::Orders,
+    order_id: usize,
+    order_year: i32,
+    order_month: u32,
+    order_day: u32,
+    order: Option<glasgow_data::Order>
 }
 
 /// A wrapper type that we'll use to encapsulate HTML parsed by askama into valid HTML for axum to serve.

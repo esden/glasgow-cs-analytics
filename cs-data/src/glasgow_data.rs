@@ -6,10 +6,11 @@ use core::fmt;
 use std::error::Error;
 use crate::order_data;
 use crate::production_data;
+use chrono::NaiveDate;
 use serde::{Serialize, Deserialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub(crate) enum Product {
+pub enum Product {
     Glasgow{id: usize},
     GlasgowCase{id: usize},
     GlasgowEarlyBird{id: usize},
@@ -19,12 +20,13 @@ pub(crate) enum Product {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Order {
-    cs_id: usize,
-    queue_id: usize,
-    products: Vec<Product>,
-    contains_early_bird: bool,
-    country: String,
-    fulfilled: bool
+    pub cs_id: usize,
+    pub date: NaiveDate,
+    pub queue_id: usize,
+    pub products: Vec<Product>,
+    pub contains_early_bird: bool,
+    pub country: String,
+    pub fulfilled: bool
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -70,6 +72,7 @@ impl Orders {
             if !added {
                 orders.push(Order {
                     cs_id: record.order_id,
+                    date: record.placed_time.date(),
                     queue_id: 0,
                     products: vec![product; record.qty],
                     contains_early_bird: early_bird,
@@ -285,8 +288,12 @@ impl Orders {
         println!("Skipped order count: {}", skipped_order_count);
     }
 
+    pub fn get_order(self: &Self, order_id: usize) -> Option<&Order> {
+        self.orders.iter().find(|o| o.cs_id == order_id)
+    }
+
     pub fn print_order_info(self: &Self, order_id: usize) {
-        let order = self.orders.iter().find(|o| o.cs_id == order_id);
+        let order = self.get_order(order_id);
 
         // Order not found
         if order.is_none() {
