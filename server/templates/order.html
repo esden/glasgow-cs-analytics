@@ -12,8 +12,7 @@ SPDX-FileContributor: Written by Piotr Esden-Tempski <piotr@1bitsquared.com>
 {% block order_day_value %}value="{{ order_day }}"{% endblock %}
 
 {% block order_result %}
-
-<br/>
+<li class="list-group-item m-2 mt-0">
 
 {% match order %}
 {% when None %}
@@ -25,8 +24,8 @@ Your order number {{ order_id }} was fulfilled. It had the queue id {{ order_dat
 Your order number {{ order_id }} has the queue id {{ order_data.queue_id }}.<br/>
 There are still {{ order_data.queue_id - orders.get_fulfilled_count() }} orders to fulfill before it is your turn.<br/>
 Order contents:
-<div class="product_list">
-<table>
+<div class="table-responsive">
+<table class="table text-center table-hover table-sm">
     <tr>
         <th>Product</th>
         <th>Queue ID</th>
@@ -36,7 +35,7 @@ Order contents:
     <tr>
     {% match p %}
     {% when glasgow_data::Product::Glasgow with { id: product_id }%}
-        <td>Glasgow</td>
+        <th scope="row" class="text-start">Glasgow</th>
         <td>{{ product_id }}</td>
         {% if product_id.le(orders.glasgow_sent_to_mouser) %}
             <td>Ready to ship.</td>
@@ -44,7 +43,7 @@ Order contents:
             <td>Need to ship {{ product_id - orders.glasgow_sent_to_mouser }} to Mouser before ready.</td>
         {% endif %}
     {% when glasgow_data::Product::GlasgowCase with { id: product_id }%}
-        <td>Glasgow Case</td>
+        <th scope="row" class="text-start">Glasgow Case</th>
         <td>{{ product_id  }}</td>
         {% if product_id.le(orders.glasgow_cases_sent_to_mouser) %}
             <td>Ready to ship.</td>
@@ -52,7 +51,7 @@ Order contents:
             <td>Need to ship {{ product_id - orders.glasgow_cases_sent_to_mouser }} to Mouser before ready.</td>
         {% endif %}
     {% when glasgow_data::Product::GlasgowEarlyBird with { id: product_id }%}
-        <td>EarlyBird Glasgow</td>
+        <th scope="row" class="text-start">EarlyBird Glasgow</th>
         <td>{{ product_id }}</td>
         {% if product_id.le(orders.glasgow_sent_to_mouser) %}
             <td>Ready to ship.</td>
@@ -60,7 +59,7 @@ Order contents:
             <td>Need to ship {{ product_id - orders.glasgow_sent_to_mouser }} to Mouser before ready.</td>
         {% endif %}
     {% when glasgow_data::Product::GlasgowCaseEarlyBird with { id: product_id }%}
-        <td>EarlyBird Glasgow Case</td>
+        <th scope="row" class="text-start">EarlyBird Glasgow Case</th>
         <td>{{ product_id }}</td>
         {% if product_id.le(orders.glasgow_cases_sent_to_mouser) %}
             <td>Ready to ship.</td>
@@ -68,7 +67,7 @@ Order contents:
             <td>Need to ship {{ product_id - orders.glasgow_cases_sent_to_mouser }} to Mouser before ready.</td>
         {% endif %}
     {% when glasgow_data::Product::Unknown with { name: pn }%}
-        <td>{{ pn }}</td>
+        <th scope="row" class="text-start">{{ pn }}</th>
         <td><hr/></td>
         <td><hr/></td>
     {% endmatch %}
@@ -76,6 +75,8 @@ Order contents:
     {% endfor %}
 </table>
 </div>
+
+</li>
 {% endif %}
 {% endmatch %}
 

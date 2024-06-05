@@ -7,35 +7,23 @@ SPDX-FileContributor: Written by Piotr Esden-Tempski <piotr@1bitsquared.com>
 {% extends "base.html" %}
 
 {% block head %}
-<style>
-    body {
-        background: #131416;
-        color: #ffffffcc;
-        font-family: Arial, Helvetica, sans-serif
-    }
-    table, th, td {
-        border: 1px solid #666;
-        border-collapse: collapse;
-        padding: 2px;
-        text-align: right;
-      }
-    .product_list {
-        text-align: center;
-    }
-    .product_list > ul {
-        display: inline-block;
-    }
-    hr {
-        color: #ffffffcc;
-    }
-</style>
 {% endblock %}
 
 {% block title %}Glasgow - Digital Interface Explorer - Crowd Supply Campaign Fulfillment Tracker{% endblock %}
 
 {% block content %}
-<h1>Glasgow - Digital Interface Explorer - Crowd Supply Campaign Fulfillment Tracker</h1>
-<table>
+<header>
+<div class="text-center p-3 pb-md-4 mx-auto">
+<h1>Glasgow - Digital Interface Explorer</h1>
+<h2>Crowd Supply Campaign Fulfillment Tracker</h2>
+</div>
+</header>
+
+<main>
+<div class="row justify-content-center">
+<div class="col-6">
+<div class="table-responsive">
+<table class="table text-center table-hover table-sm">
     <tr>
         <th>Item</th>
         <th>Count</th>
@@ -44,58 +32,93 @@ SPDX-FileContributor: Written by Piotr Esden-Tempski <piotr@1bitsquared.com>
         <th>Remaining</th>
     </tr>
     <tr>
-        <td>Glasgows sent to Mouser</td>
+        <th scope="row" class="text-start">Glasgows sent to Mouser</th>
         <td>{{ orders.glasgow_sent_to_mouser }}</td>
         <td><hr/></td>
         <td><hr/></td>
         <td><hr/></td>
     </tr>
     <tr>
-        <td>Glasgow cases sent to Mouser</td>
+        <th scope="row" class="text-start">Glasgow cases sent to Mouser</th>
         <td>{{ orders.glasgow_cases_sent_to_mouser }}</td>
         <td><hr/></td>
         <td><hr/></td>
         <td><hr/></td>
     </tr>
     <tr>
-        <td>Orders</td>
+        <th scope="row" class="text-start">Orders</th>
         <td>{{ orders.get_order_count() }}</td>
         <td><hr/></td>
         <td>{{ orders.get_fulfilled_count() }} ({{ orders.get_fulfilled_percent()|fmt("{:.1}") }}%)</td>
         <td>{{ orders.get_remaining_count() }} ({{ orders.get_remaining_percent()|fmt("{:.1}") }}%)</td>
     </tr>
     <tr>
-        <td>Ordered Glasgows</td>
+        <th scope="row" class="text-start">Ordered Glasgows</th>
         <td>{{ orders.glasgow_count }}</td>
         <td>{{ orders.get_glasgow_at_mouser_count() }} ({{ orders.get_glasgow_at_mouser_percent()|fmt("{:.1}") }}%)</td>
         <td>{{ orders.get_fulfilled_glasgow_count() }} ({{ orders.get_fulfilled_glasgow_percent()|fmt("{:.1}") }}%)</td>
         <td>{{ orders.get_remaining_glasgow_count() }} ({{ orders.get_remaining_glasgow_percent()|fmt("{:.1}") }}%)</td>
     </tr>
     <tr>
-        <td>Ordered Glasgow Cases</td>
+        <th scope="row" class="text-start">Ordered Glasgow Cases</th>
         <td>{{ orders.glasgow_case_count }}</td>
         <td>{{ orders.get_glasgow_cases_at_mouser_count() }} ({{ orders.get_glasgow_cases_at_mouser_percent()|fmt("{:.1}") }}%)</td>
         <td>{{ orders.get_fulfilled_glasgow_cases_count() }} ({{ orders.get_fulfilled_glasgow_cases_percent()|fmt("{:.1}") }}%)</td>
         <td>{{ orders.get_remaining_glasgow_cases_count() }} ({{ orders.get_remaining_glasgow_cases_percent()|fmt("{:.1}") }}%)</td>
     </tr>
 </table>
-<br/>
+</div>
+</div>
+</div>
+
+<div class="row justify-content-center">
+<div class="col-8">
 Note: There is a possibility that some of the numbers are negative. If for example the "At Mouser" value is negative it most likely means that some items were returned and Mouser ended up shipping them to another customer. This results in more Glasgows being shipped to customers than the amount we sent to them. If the number in "Remaining" is negative, this indicates that we sent more items to Mouser than the amount needed to fulfill the outstanding orders.
+</div>
+</div>
 
-<h2>Look up Order</h2>
+<div class="row pt-5 justify-content-center">
+<div class="col-6">
+<div class="card">
+<div class="card-header">
+<h4 class="card-title" >Look up Order</h4>
+</div>
+
+<ul class="list-group list-group-flush">
+<li class="list-group-item m-2">
 <form action="/order">
-    <label for="id">Order Number:</label>
-    <input type="text" name="id" {% block order_id_value %}{% endblock %}>
-    <label>Order Date:</label>
-    <input type="text" name="year" maxlength="4" size="4" placeholder="YYYY"{% block order_year_value %}{%endblock%}>
-    <input type="text" name="month" maxlength="2" size="2" placeholder="mm"{% block order_month_value %}{% endblock %}>
-    <input type="text" name="day" maxlength="2" size="2" placeholder="dd"{% block order_day_value %}{% endblock %}>
-    <input type="submit" value="Submit">
+    <div class="row mb-2">
+    <label for="id" class="col-auto col-form-label">Order Number:</label>
+    <div class="col">
+    <input type="text" name="id" class="form-control" {% block order_id_value %}{% endblock %}>
+    </div>
+    </div>
+    <div class="row mb-2">
+    <label class="col-auto col-form-label">Order Date:</label>
+    <div class="col">
+    <div class="input-group">
+    <input type="text" name="year" class="form-control" maxlength="4" size="4" placeholder="YYYY"{% block order_year_value %}{%endblock%}>
+    <span class="input-group-text">/</span>
+    <input type="text" name="month" class="form-control" maxlength="2" size="2" placeholder="mm"{% block order_month_value %}{% endblock %}>
+    <span class="input-group-text">/</span>
+    <input type="text" name="day" class="form-control" maxlength="2" size="2" placeholder="dd"{% block order_day_value %}{% endblock %}>
+    </div>
+    </div>
+    </div>
+    <div class="mb-1">
+    <input type="submit" value="Submit" class="btn btn-outline-primary">
+    </div>
 </form>
-
+</li>
 {% block order_result %}{% endblock %}
+</li>
+</ul>
+
+</main>
+<footer>
 <br/>
 <b>Disclaimer:</b> The above information is calculated based on best effort and data we have available. The information might not reflect physical reality. If you have questions about your order <a href="https://www.crowdsupply.com/contact">contact CrowdSupply</a>.<br/>
 <b>Contact:</b> If you have technical suggestions feel free to open an issue on the tracker <a href="https://github.com/esden/glasgow-cs-analytics">GitHub page</a>. If you have other questions you can ask through the regular <a href="http://glasgow-embedded.org/latest/community.html">Glasgow Community channels</a>.<br/>
 This tracker was brought to you by <a href="https://chaos.social/@esden">Piotr Esden-Tempski</a>.
+</footer>
 {% endblock %}
