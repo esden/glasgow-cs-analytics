@@ -35,17 +35,17 @@ Your order contains:
         {% if product_id.le(orders.glasgow_sent_to_mouser) -%}
         it is at Mouser and will ship soon, if all items in your order are available.
         {% else -%}
-        we have to ship {{ product_id - orders.glasgow_sent_to_mouser }} Glasgows to Mouser before your order can be filfilled.
+        we have to ship {{ product_id - orders.glasgow_sent_to_mouser }} Glasgows to Mouser before your order can be fulfilled.
         {% endif %}
     </li>
 
     {% when glasgow_data::Product::GlasgowCase with { id: product_id }%}
     <li>
         Glasgow Case with the queue ID {{ product_id }},
-        {% if product_id.le(orders.glasgow_sent_to_mouser) -%}
+        {% if product_id.le(orders.glasgow_cases_sent_to_mouser) -%}
         it is at Mouser and will ship soon, if all items in your order are available.
         {% else -%}
-        we have to ship {{ product_id - orders.glasgow_sent_to_mouser }} Glasgows to Mouser before your order can be filfilled.
+        we have to ship {{ product_id - orders.glasgow_cases_sent_to_mouser }} Glasgow cases to Mouser before your order can be fulfilled.
         {% endif %}
     </li>
     {% when glasgow_data::Product::GlasgowEarlyBird with { id: product_id }%}
@@ -54,16 +54,16 @@ Your order contains:
         {% if product_id.le(orders.glasgow_sent_to_mouser) -%}
         it is at Mouser and will ship soon, if all items in your order are available.
         {% else -%}
-        we have to ship {{ product_id - orders.glasgow_sent_to_mouser }} Glasgows to Mouser before your order can be filfilled.
+        we have to ship {{ product_id - orders.glasgow_sent_to_mouser }} Glasgows to Mouser before your order can be fulfilled.
         {% endif %}
     </li>
     {% when glasgow_data::Product::GlasgowCaseEarlyBird with { id: product_id }%}
     <li>
         EarlyBird Glasgow Case with the queue ID {{ product_id }},
-        {% if product_id.le(orders.glasgow_sent_to_mouser) -%}
+        {% if product_id.le(orders.glasgow_cases_sent_to_mouser) -%}
         it is at Mouser and will ship soon, if all items in your order are available.
         {% else -%}
-        we have to ship {{ product_id - orders.glasgow_sent_to_mouser }} Glasgows to Mouser before your order can be filfilled.
+        we have to ship {{ product_id - orders.glasgow_cases_sent_to_mouser }} Glasgow cases to Mouser before your order can be fulfilled.
         {% endif %}
     </li>
     {% when glasgow_data::Product::Unknown with { name: product_name }%}
