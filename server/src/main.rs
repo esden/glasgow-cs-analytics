@@ -80,9 +80,13 @@ async fn order_page(State(orders): State<glasgow_data::Orders>, Query(order_quer
     let mut order = orders.get_order(order_query.id).cloned();
     let query_date = NaiveDate::from_ymd_opt(order_query.year, order_query.month, order_query.day);
     if order.is_some() {
-        info!("Lookup of a valid order id {} with date {}-{}-{}.", order_query.id, order_query.year, order_query.month, order_query.day);
+        info!("Query of order id {} with date {}-{}-{}. -> Valid (Date {}) https://glasgow.1bitsquared.com/order?id={}&year={}&month={}&day={}",
+            order_query.id, order_query.year, order_query.month, order_query.day,
+            order.clone().unwrap().date,
+            order_query.id, order_query.year, order_query.month, order_query.day
+        );
     } else {
-        info!("Lookup of an invalid order id {} with date {}-{}-{}.", order_query.id, order_query.year, order_query.month, order_query.day);
+        info!("Query of order id {} with date {}-{}-{}. -> Invalid", order_query.id, order_query.year, order_query.month, order_query.day);
     }
     order = if order.is_some() && query_date.is_some() {
             let od = order.unwrap();
@@ -96,7 +100,7 @@ async fn order_page(State(orders): State<glasgow_data::Orders>, Query(order_quer
             None
         };
     if order.is_none() {
-        info!("Date check for order id {} with date {}-{}-{}. Failed.", order_query.id, order_query.year, order_query.month, order_query.day);
+        info!("Query failed due to date mismatch.");
     }
     let template =
         OrderTemplate {
