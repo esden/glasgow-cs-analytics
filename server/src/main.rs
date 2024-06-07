@@ -78,15 +78,21 @@ struct OrderQuery {
 
 async fn order_page(State(orders): State<glasgow_data::Orders>, Query(order_query): Query<OrderQuery>) -> impl IntoResponse {
     let mut order = orders.get_order(order_query.id).cloned();
-    let query_date = NaiveDate::from_ymd_opt(order_query.year, order_query.month, order_query.day);
+    let oq = OrderQuery {
+        id: order_query.id,
+        year: if order_query.year < 100 { order_query.year + 2000 } else { order_query.year },
+        month: order_query.month,
+        day: order_query.day,
+    };
+    let query_date = NaiveDate::from_ymd_opt(oq.year, oq.month, oq.day);
     if order.is_some() {
         info!("Query of order id {} with date {}-{}-{}. -> Valid (Date {}) https://glasgow.1bitsquared.com/order?id={}&year={}&month={}&day={}",
-            order_query.id, order_query.year, order_query.month, order_query.day,
+            oq.id, oq.year, oq.month, oq.day,
             order.clone().unwrap().date,
-            order_query.id, order_query.year, order_query.month, order_query.day
+            oq.id, oq.year, oq.month, oq.day
         );
     } else {
-        info!("Query of order id {} with date {}-{}-{}. -> Invalid", order_query.id, order_query.year, order_query.month, order_query.day);
+        info!("Query of order id {} with date {}-{}-{}. -> Invalid", oq.id, oq.year, oq.month, oq.day);
     }
     order = if order.is_some() && query_date.is_some() {
             let od = order.unwrap();
@@ -105,10 +111,10 @@ async fn order_page(State(orders): State<glasgow_data::Orders>, Query(order_quer
     let template =
         OrderTemplate {
             orders,
-            order_id: order_query.id,
-            order_year: order_query.year,
-            order_month: order_query.month,
-            order_day: order_query.day,
+            order_id: oq.id,
+            order_year: oq.year,
+            order_month: oq.month,
+            order_day: oq.day,
             order};
     HtmlTemplate(template)
 }
