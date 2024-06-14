@@ -21,7 +21,7 @@ SPDX-FileContributor: Written by Piotr Esden-Tempski <piotr@1bitsquared.com>
 
 <main>
 <div class="row justify-content-center">
-<div class="col-6">
+<div class="col-lg-6 col-xs-1">
 <div class="table-responsive">
 <table class="table text-center table-hover table-sm">
     <tr>
@@ -78,13 +78,13 @@ SPDX-FileContributor: Written by Piotr Esden-Tempski <piotr@1bitsquared.com>
 </div>
 
 <div class="row justify-content-center">
-<div class="col-8">
+<div class="col-lg-8 col-xs-1">
 Note: There is a possibility that some of the numbers are negative. If for example the "At Mouser" value is negative it most likely means that some items were returned and Mouser ended up shipping them to another customer. This results in more Glasgows being shipped to customers than the amount we sent to them. If the number in "Remaining" is negative, this indicates that we sent more items to Mouser than the amount needed to fulfill the outstanding orders.
 </div>
 </div>
 
-<div class="row pt-5 justify-content-center">
-<div class="col-6">
+<div class="row pt-lg-5 pt-xs-0 justify-content-center">
+<div class="col-lg-6 col-xs-1">
 <div class="card">
 <div class="card-header">
 <h4 class="card-title" >Look up Order</h4>
@@ -94,14 +94,18 @@ Note: There is a possibility that some of the numbers are negative. If for examp
 <li class="list-group-item m-2">
 <form action="/order">
     <div class="row mb-2">
+    <div class="col-md-3">
     <label for="id" class="col-auto col-form-label">Order Number:</label>
-    <div class="col">
+    </div>
+    <div class="col-md-auto">
     <input type="text" name="id" class="form-control" {% block order_id_value %}{% endblock %}>
     </div>
     </div>
     <div class="row mb-2">
+    <div class="col-md-3">
     <label class="col-auto col-form-label">Order Date:</label>
-    <div class="col">
+    </div>
+    <div class="col-md-auto">
     <div class="input-group">
     <input type="text" name="year" class="form-control" maxlength="4" size="4" placeholder="YYYY"{% block order_year_value %}{%endblock%}>
     <span class="input-group-text">/</span>
