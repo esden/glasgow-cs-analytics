@@ -314,8 +314,15 @@ impl Orders {
         // Found order, print info
         println!("We have fulfilled {} orders, so there are still {} orders to fulfill before it is your turn.",
             self.get_fulfilled_count(),
-            order.queue_id - self.get_fulfilled_count()
+            order.queue_id as i64 - self.get_fulfilled_count() as i64
         );
+        if (order.queue_id as i64 - self.get_fulfilled_count() as i64) < 0 {
+            println!("According to our records your order should have already shipped, there might be a lot of reasons why this is the case.");
+            println!("Here are a few potential reasons:");
+            println!(" * You are located in a country that got sanctioned after the campaign happened, for example Russian Federation.");
+            println!(" * You had or have pending fees on your order due to customs cost adjustments and your queue position had to be pushed.");
+            println!(" * Our queue placement prediction does not match reality. You can contact Crowd Supply directly and ask for the reason why your order was not shipped yet.");
+        }
         println!("Your order contains:");
         for p in &order.products {
             match p {
