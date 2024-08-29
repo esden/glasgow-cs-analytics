@@ -22,7 +22,19 @@ Sorry could not find order with the ID {{ order_id }}.
 Your order number {{ order_id }} was fulfilled. It had the queue id {{ order_data.queue_id }}.
 {% else %}
 Your order number {{ order_id }} has the queue id {{ order_data.queue_id }}.<br/>
-There are still {{ order_data.queue_id - orders.get_fulfilled_count() }} orders to fulfill before it is your turn.<br/>
+{% if order_data.queue_id <= orders.get_fulfilled_count() %}
+According to our records your order should have already shipped, there might be a lot of reasons why this is the case.<br/>
+Here are a few potential reasons:
+<ul>
+<li>You are located in a country that got sanctioned after the campaign was concluded. For example Russian Federation.</li>
+<li>You had or have pending fees on your order due to customs cost adjustments and your queue position had to be pushed.</li>
+<li>Our queue placement prediction does not match reality.</li>
+</ul>
+You can <a href="https://www.crowdsupply.com/contact/status-pre-shipment">contact Crowd Supply directly</a> and ask for the reason why your order was not shipped yet.
+{% else %}
+There are still {{ order_data.queue_id - orders.get_fulfilled_count() }} orders to fulfill before it is your turn.
+{% endif %}
+<br/>
 Order contents:
 <div class="table-responsive">
 <table class="table text-center table-hover table-sm">
